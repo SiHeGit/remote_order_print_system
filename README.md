@@ -1,7 +1,7 @@
 # ROPS (Remote Order Print System)
 
 ## About
-ROPS is a web-based application that allows you to manage orders in a restaurant or at an event. The order can be recorded, processed and sent to the kitchen by a front end on the Smartphone of the waiter. After sending the order, the order is automatically printed out on a thermal POS printer.
+ROPS is a web-based application that allows you to manage orders in a restaurant or at an event. The order can be recorded, processed and sent to the kitchen by a front end on the Smartphone of the waiter. After sending the order, it is automatically printed out on a thermal POS printer.
 
 ## Hardware Setup
 - Raspberry Pi (tested with Raspbian GNU/Linux 9 (stretch))
