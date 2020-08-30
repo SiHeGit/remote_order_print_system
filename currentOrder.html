@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="./style.css"> 
+        <style>
+            /* .frac {
+                padding-left: 10px;
+                display: inline-block;
+                position: relative;
+                vertical-align: middle;
+                letter-spacing: 0.001em;
+                text-align: left;
+            }
+            .frac > span {
+                display: block;
+                padding: 0.1em;
+            }
+            .frac span.bottom {
+                border-top: thin solid black;
+            }
+            .frac span.symbol {
+                display: none;
+            } */
+            /* .alignleft {
+                float: left;
+                margin: 2px;
+            }
+            .alignright {
+                float: right;
+                margin: 2px;
+            } */
+            /* input[type="checkbox"] {
+                width: 40px; 
+                height: 40px; 
+            } */
+            input[type=checkbox] {
+                /* sized checkbox */
+                -ms-transform: scale(1.5); /* IE */
+                -moz-transform: scale(1.5); /* FF */
+                -webkit-transform: scale(1.5); /* Safari and Chrome */
+                -o-transform: scale(1.5); /* Opera */
+                transform: scale(1.5);
+                padding: 10px;
+                margin: 0;
+            }
+
+            /* Might want to wrap a span around your checkbox text */
+            /* .checkboxtext {
+                font-size: 110%;
+                display: inline;
+            } */
+
+            /* .wrap {
+                display: flex;
+                background: #ccc;
+                width: 100%;
+                justify-content: space-between;
+            }
+            .wrap div {
+                border: 3px solid tomato;
+            }
+            .margin div:last-child {
+                margin-left: auto;
+            }
+            .grow div:nth-child(2) {
+                flex: 1;
+            } */
+            /* .result {
+                margin-top: 20px;
+            } */
+            /* .result:after {
+                content: '';
+                display: table;
+                clear: both;
+            } */
+            .result div {
+                float: left;
+            }
+            .result div:last-child {
+                float: right;
+            }
+
+
+        </style>
+    </head>
+
+
+    <table>
+        <!-- 
+            
+            &#x2611; (selected)
+            &#x2705; (selected green)
+            &#x1F4B2; (dollar green) 
+            &#9745;&#65039; (blue checkbox)
+            &#x2705; (green checkbox)
+            &#x2611; (black checkbox)
+            &#x2714;&#xFE0F; (green check mark)
+            &#x2714; (black check mark bold)
+            &#10003; (black check mark) 
+        -->
+
+        <tr>
+            <td>
+                &#x2611;1
+            </td>
+            <td>
+                <button id="idBtn1" onClick="print(this.id)">
+                    <div id="textbox">
+                        <p class="alignleft">Finger Food Klassiker</p>
+                        <nobr><p class="alignright">4.00 €</p></nobr>
+                    </div>
+                </button>
+            </td>
+            <td>
+                <div class="frac">
+                    <span><span>1</span><span> &#x1F4B0;</span></span>
+                    <span class="symbol">/</span>
+                    <span class="bottom">2 &#x1F6D2;</span>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                &#x2705;1
+            </td>
+            <td>
+                <button id="idBtn1" onClick="print(this.id)">
+                    <div id="textbox">
+                        <p class="alignleft">Pommes</p>
+                        <p class="alignright">4.00 €</p>
+                    </div>
+                </button>
+            </td>
+            <td>
+                <div class="frac">
+                <span>0 &#x1F4B0;</span>
+                <span class="symbol">/</span>
+                <span class="bottom">2 &#x1F4B2;</span>
+                
+            </div></td>
+        </tr>
+        <tr>
+            <td>
+                &#x2705;1
+            </td>
+            <td><button id="idBtn3" onClick="print(this.id)">Curry Wurst<br><small>3,50 €</small></button></td>
+            <td>
+                <div class="frac">
+                <span>1 &#x1F4B0;</span>
+                <span class="symbol">/</span>
+                <span class="bottom">2 &#x1F4B2;</span>
+                
+            </div></td>
+        </tr>
+        <tr>
+            <td>
+                &#x2705;1
+            </td>
+            <td><button id="idBtn4" onClick="print(this.id)">Burger<br><small>5,00 €</small></button></td>
+            <td>
+                <div class="frac">
+                <span>2 &#x1F4B0;</span>
+                <span class="symbol">/</span>
+                <span class="bottom">2 &#x1F4B2;</span>
+                
+            </div></td>
+        </tr>
+        <tr>
+            <td>
+                &#x2705;1
+            </td>
+            <td><button id="idBtn5" onClick="print(this.id)">Finger Food Klassiker<br><small>4,00 €</small></button></td>
+            <td>
+                <div class="frac">
+                <span>3 &#x1F4B0;</span>
+                <span class="symbol">/</span>
+                <span class="bottom">5 &#x1F4B2;</span>
+                
+            </div></td>
+        </tr>
+    </table>
+
+    <!-- <input type="checkbox" id="myCheck"  onclick="myFunction()"> -->
+    <p>
+        <span class="alignleft">
+            <input type="checkbox" checked />
+            <span>Alles auswählen</span>
+        </span>
+        <span class="alignright">Summe: 5.00 €</span>
+        
+    </p>
+
+    <!-- <span class="checkboxtext">
+    Option A
+    </span> -->
+
+</html>

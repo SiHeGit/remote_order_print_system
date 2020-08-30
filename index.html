@@ -1,0 +1,64 @@
+<!-- 
+    created:        2020-04-04
+    author:         S. Hennes
+    description:    default page
+-->
+
+<!DOCTYPE html>
+<html lang="de">
+    <head>
+        <meta charset="UTF-8">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" type="text/css" href="./style.css"> 
+        <link rel="shortcut icon" type="image/x-icon" href="./images/favicon.ico">
+    </head>
+
+    
+    <body>
+
+        <!-- navigation bar ******************************************************************************************* -->
+        <div id="mainNavbar" class="navbar">
+            <a onclick="currentOrder()" class="active">Bestellsystem</a>
+            <a>Meine Bestellungen</a>
+            <a>Einstellungen</a>
+            <a href="javascript:void(0);" style="font-size:15px;" class="icon" onclick="toggleNavbar()">&#9776;</a>  <!-- unicode &#9776 for three lines -->
+        </div>
+
+        <div id ="idMessageBar" class="messageBar" onclick="closeNavbar()">
+        
+        </div>
+
+        <!-- content ******************************************************************************************* -->
+
+        <div id = "idHeader" class="header" onclick="closeNavbar()">
+
+        </div>
+
+        <div id="idContentScroll" class="contentScroll" onclick="closeNavbar()">
+
+        </div>
+
+        <div id="idContentStatic" class="contentStatic" onclick="closeNavbar()">
+
+        </div>
+
+        <div id="idFooter" class="footer" onclick="closeNavbar()">
+
+        </div>
+
+    </body>
+
+    <!-- Scripts ******************************************************************************************* -->
+    <script>
+        var LONG_TAP_THRESHOLD = 300; // range of time after which a longtap event could be detected
+    </script>
+    <script src="scripts/node_modules/tocca/Tocca.js"></script> <!-- external script -->
+    
+    <script src="scripts/menu.js"></script>
+    <script src="scripts/currentOrder.js"></script>
+    <script src="scripts/currentOrderMain.js"></script>
+    <script src="scripts/currentOrderPay.js"></script>
+    <script src="scripts/currentOrderBill.js"></script>
+    <script>currentOrder();</script> <!-- load at begin default page -->
+</html>

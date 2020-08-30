@@ -1,0 +1,210 @@
+/*
+    created:        2020-04-04
+    author:         S. Hennes
+    description:    styles of the page
+*/
+
+html, body {
+    height: 100%;
+    display: flex; /* use flexbox */
+    flex-direction: column;
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.navbar {
+    overflow: hidden;
+    background-color: #1D6A96;  
+    width: 100%;
+    flex-direction: column;
+}
+
+.navbar a {
+    float: left;
+    display: block;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.navbar a:hover {
+    background-color: #D1DDDB;
+    color: #283B42;
+}
+
+.navbar a.active {
+    background-color: #85B8CB;
+    color: #283B42;
+}
+
+.navbar .icon {
+    display: none;
+}
+
+@media screen and (max-width: 600px) {
+    .navbar a:not(:first-child) {display: none;}
+    .navbar a.icon {
+        float: right;
+        display: block;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .navbar.responsive .icon {
+    position: absolute;
+        right: 0;
+        top: 0;
+    }
+    .navbar.responsive a {
+        float: none;
+        display: block;
+        text-align: left;
+    }
+}
+
+.messageBar, .header, .contentStatic{
+    background-color: #d9d9d9;
+}
+
+.header {
+    padding: 15px;
+}
+
+.contentScroll {
+    /*padding: 15px; /* space between content and page */
+    flex: 1; /* fill rest of page with flex box */
+    overflow: auto;
+}
+
+.contentStaticBorder div{
+    display: flex;
+    float: left;
+}
+
+.contentStaticBorder div:last-child { /* align sum right */
+    float: right;
+}
+
+.footer {
+    display: flex;
+    flex-direction: row;
+    /* overflow: hidden; */
+    /* flex-wrap: wrap; */
+    /* justify-content: flex-end; */
+    background-color: #d9d9d9;
+
+}
+
+.footer > button{
+    /* width: fit-content; */
+    margin: 5px;
+    padding: 10px;
+    width: 100%;
+    font-size: 18px;
+}
+
+@media screen and (max-width: 300px) { 
+    .footer {
+        flex-direction: column;
+    }
+
+    .footer > button{
+        width: auto;
+    }
+}
+
+
+button {
+    background-color: #1D6A96; /* Green */
+    border: none;
+    color: white;
+    padding: 15px 15px;
+    text-align: left;
+    /* text-align: center; */
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    width: 100%;
+
+    
+    /* disable text selection on long tap for android and iOS? user */
+    -webkit-touch-callout:none;
+    -webkit-user-select:none;
+    -khtml-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none;
+    -webkit-tap-highlight-color:rgba(0,0,0,0);
+}
+
+
+table {
+    /* border-collapse: collapse; */
+    width: 100%;
+    border-spacing: 5px 10px;
+}
+
+
+/* th, td {
+    padding: 5px 10px;
+} */
+
+.frac { /* fraction for current order pay */
+    padding-left: 10px;
+    display: inline-block;
+    position: relative;
+    vertical-align: middle;
+    letter-spacing: 0.001em;
+    text-align: left;
+}
+.frac > span {
+    display: block;
+    padding: 0.1em;
+}
+.frac span.bottom {
+    border-top: thin solid black;
+}
+.frac span.symbol {
+    display: none;
+}
+
+.iconLayoutSpaceLeft { /* space left for icons */
+    margin-left: 3px;
+}
+
+.iconLayoutSpaceRight { /* space right for icons */
+    margin-right: 3px;
+}
+
+.alignleft { /* align left for button text */
+    float: left;
+    margin: 2px;
+}
+
+.alignright { /* align right for button text */
+    float: right;
+    margin: 2px;
+}
+
+input[type=checkbox] {
+    /* sized checkbox */
+    -ms-transform: scale(1.5); /* IE */
+    -moz-transform: scale(1.5); /* FF */
+    -webkit-transform: scale(1.5); /* Safari and Chrome */
+    -o-transform: scale(1.5); /* Opera */
+    transform: scale(1.5);
+    padding: 10px;
+    margin: 0;
+    margin-top: 7px;
+}
+
+label { /* label of checkbox */
+    margin: 5px;
+}
+
+span {
+    white-space:pre; /* show white spaces */
+}
