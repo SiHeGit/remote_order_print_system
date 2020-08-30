@@ -1,6 +1,7 @@
 <?php
 
 	require __DIR__ . '/composer/vendor/autoload.php';
+	
 	use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 	use Mike42\Escpos\Printer;
 	use Mike42\Escpos\EscposImage;
