@@ -1,20 +1,35 @@
 <?php
 
+	/**
+	 * Script to store and send data from the database
+	 */
+
+	// include class
+	include 'dbconnection.php';
+
 	require __DIR__ . '/composer/vendor/autoload.php';
 	
 	use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
 	use Mike42\Escpos\Printer;
 	use Mike42\Escpos\EscposImage;
 
-	class PrinterClass {
+	class PrinterClass extends DBConnection {
 
-		function __construct(){
-			// parent::__construct();
-		}
+		// constructor
+		public function __construct(){
+			parent::__construct();
+        }
 
 		public function sendData(){
 
-			if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+			// $result = pg_query("NOTIFY channel, 'new values';");
+			
+			// $query = "INSERT INTO menu VALUES ('1', '1', 'Test', '5.2')";
+			parent::executePgQuery("UPDATE category SET (name) = ('neu') WHERE id_category = '1'");
+
+
+			if ($_SERVER["REQUEST_METHOD"] == "POST" and False) {				
 
 				$json = file_get_contents('php://input');
 				$data = json_decode($json);
