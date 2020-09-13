@@ -5,13 +5,8 @@
 	 */
 
 	// include class
-	include 'dbconnection.php';
+    include 'dbconnection.php';
 
-	require __DIR__ . '/composer/vendor/autoload.php';
-	
-	use Mike42\Escpos\PrintConnectors\NetworkPrintConnector;
-	use Mike42\Escpos\Printer;
-	use Mike42\Escpos\EscposImage;
 
 	class PrinterClass extends DBConnection {
 
@@ -23,18 +18,11 @@
 		public function sendData(){
 
 
-			// $result = pg_query("NOTIFY channel, 'new values';");
-			
-			// $query = "INSERT INTO menu VALUES ('1', '1', 'Test', '5.2')";
-			parent::executePgQuery("UPDATE category SET (name) = ('neu') WHERE id_category = '1'");
-
-
-			if ($_SERVER["REQUEST_METHOD"] == "POST" and False) {				
+			if ($_SERVER["REQUEST_METHOD"] == "POST" or True) {
 
 				$json = file_get_contents('php://input');
-				$data = json_decode($json);
-	
-	
+                $data = json_decode($json);
+                
 				// $test = count($data);
 	
 				// if(isset($_POST["item"])){
@@ -43,33 +31,26 @@
 				$obj = new \stdClass(); // create a new object (JSON)
 	
 				try{
-	
-					$connector = new NetworkPrintConnector("192.168.0.224", 9100);
-					$printer = new Printer($connector);
-	
-					/* Initialize */
-					$printer -> initialize(); // resets formatting back to the defaults
-					$printer -> setJustification(Printer::JUSTIFY_CENTER); // justification
+    
+                    // $result = pg_query("NOTIFY channel, 'new values';");
+			
+                    // possible queries:
+                    // 1. INSERT INTO public.menu (id_menu, price, category_id) VALUES ('Pommes', '2.5', 'food')
+                    // 2. INSERT INTO public.waiter (id_waiter, name, password) VALUES ('def', 'default', '1234')
+                    // 3. INSERT INTO public.orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ('false', '1999-01-08 04:05:06', 'def', '2', '1999-01-08 04:05:06')
+                    // 4. INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ('1', '0', '2', 'Pommes')
+                    
+                    // create new order unit
+                    $query = "INSERT INTO orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ('true', '2020-01-08 04:05:06', 'def', '2', '1999-01-08 04:05:06') RETURNING id_orderunit";
+                    $result = parent::executePgQuery($query);
+                    $id = pg_fetch_row($result)[0]; // get first element of array
 
-					$orderList = $this->getOrderList();
-	
-					foreach ($data as &$element) {
-						$id = $element->id;
-						$amount = $element->amount;
+                    // add order to order unit
+                    $query = "INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ('2', '0', '" . $id . "', 'Pommes')";
+                    $result = parent::executePgQuery($query);
 
-						$item = $orderList->itemList[$id]["item"]; // get item from array
-						
-	
-						for ($i = 0; $i < $amount; $i++) {
-	
-							// print items
-							$printer -> text($item."\n");
-							$printer -> cut();
-	
-						}
-					}
-					
-					$printer -> close();
+                    // notify print job
+                    $result = parent::executePgQuery("NOTIFY printChannel, 'ready';");
 	
 	
 					$obj->state = "success";
