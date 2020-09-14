@@ -18,86 +18,79 @@
   
     class PrintJob extends DBConnection{
 
+        private $dbconn;
+
         // constructor
         public function __construct(){
-            parent::__construct();
+            $failure = False;
+
+            do {
+                try {
+                    parent::__construct();
+                    $this->dbconn = parent::getConnection();
+                    $resut = parent::executePgQuery('LISTEN printChannel;'); // listen to channel
+
+                } catch (Exception $e) {
+                    $failure = True;
+                    print_r($e->getMessage());
+                    print_r("...new try to reach the database\n");
+                    sleep(1);
+                }
+            } while ($failure);
         }
         
         // run() to execute job
         public function run(){
 
-            $dbconn = parent::getConnection();
-
-            $resut = parent::executePgQuery('LISTEN printChannel;');
-            // $resut = parent::executePgQuery('LISTEN category_changed;');
-
-            // parent::executePgQuery("NOTIFY category_changed, 'foo';");
-
-            $notify = 0;
-            // while(!$notify){
+            
             while(True){
-                $notify = pg_get_notify($dbconn); // get notify must be while a connection is acitve!
-                if (!$notify) {
 
-                    
-                    // nothing to do
-                    print_r("nothing to do...\n");
+                try {
 
-                } else {
-                    print_r($notify);
-
-                    $query = "SELECT id_orderunit FROM public.orderunit WHERE readytoprint = true";
-                    $resultOrderUnit = parent::executePgQuery($query);
-
-                    while ($id_orderunit = pg_fetch_row($resultOrderUnit)) {
-
-                        $query = "SELECT amount, menu_id FROM public.order WHERE orderunit_id = '" . $id_orderunit[0] . "'";
-                        $resultOrder = parent::executePgQuery($query);
-
-                        // $orderData = pg_fetch_row($resultOrder);
-
-                        while ($orderData = pg_fetch_row($resultOrder)) {
-
-                            $connector = new NetworkPrintConnector("192.168.0.224", 9100);
-                            $printer = new Printer($connector);
-                            
-                            /* Initialize */
-                            $printer -> initialize(); // resets formatting back to the defaults
-                            $printer -> setJustification(Printer::JUSTIFY_CENTER); // justification
-
-                            for ($i = 0; $i < $orderData[0]; $i++) { // print out data
-                                print_r("printing order: " . $orderData[1]. "\n");
-                                $printer -> text($orderData[1]."\n");
-                                $printer -> cut();
-                            }
-
-                            $printer -> close();
-                        }
-
+                    $notify = pg_get_notify($this->dbconn); // get notify
+                    if (!$notify) {
                         
+                        // nothing to do
+                        print_r("nothing to do...\n");
+    
+                    } else {
+                        print_r($notify);
+    
+                        $query = "SELECT id_orderunit FROM public.orderunit WHERE readytoprint = true";
+                        $resultOrderUnit = parent::executePgQuery($query);
+    
+                        while ($id_orderunit = pg_fetch_row($resultOrderUnit)) {
+    
+                            $query = "SELECT amount, menu_id FROM public.order WHERE orderunit_id = '" . $id_orderunit[0] . "'";
+                            $resultOrder = parent::executePgQuery($query);
+    
+                            // $orderData = pg_fetch_row($resultOrder);
+    
+                            while ($orderData = pg_fetch_row($resultOrder)) {
+    
+                                $connector = new NetworkPrintConnector("192.168.0.224", 9100);
+                                $printer = new Printer($connector);
+                                
+                                /* Initialize */
+                                $printer -> initialize(); // resets formatting back to the defaults
+                                $printer -> setJustification(Printer::JUSTIFY_CENTER); // justification
+    
+                                for ($i = 0; $i < $orderData[0]; $i++) { // print out data
+                                    print_r("printing order: " . $orderData[1]. "\n");
+                                    $printer -> text($orderData[1]."\n");
+                                    $printer -> cut();
+                                }
+    
+                                $printer -> close();
+                            }   
+                        }
                     }
 
-
-                    // $orderList = $this->getOrderList();
-	
-					// foreach ($data as &$element) {
-					// 	$id = $element->id;
-					// 	$amount = $element->amount;
-
-					// 	$item = $orderList->itemList[$id]["item"]; // get item from array
-						
-	
-						// for ($i = 0; $i < $amount; $i++) {
-	
-							// // print items
-							// $printer -> text($item."\n");
-							// $printer -> cut();
-	
-						// }
-					// }
-					
-					
+                } catch (Exception $e) {
+                    print_r("Exception occured!\nMessage: " . $e->getMessage(). "\n");
+                
                 }
+
                 sleep(1);
             }
         

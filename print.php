@@ -7,12 +7,19 @@
 	// include class
     include 'dbconnection.php';
 
+    // configuration of the error reporting (deactivate error reporting if the program goes to production because of security reasons)
+    error_reporting(-1); // 0 = deactivate error reporting completely, -1 (E_ALL) = acitvate error reporting
+
 
 	class PrinterClass extends DBConnection {
 
 		// constructor
 		public function __construct(){
-			parent::__construct();
+            try{
+                parent::__construct();
+            } catch (Exception $e) {
+                // currently do nothing if a connection is not established
+            }
         }
 
 		public function sendData(){
@@ -41,7 +48,7 @@
                     // 4. INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ('1', '0', '2', 'Pommes')
                     
                     // create new order unit
-                    $query = "INSERT INTO orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ('true', '2020-01-08 04:05:06', 'def', '2', '1999-01-08 04:05:06') RETURNING id_orderunit";
+                    $query = "INSERT INTO orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ('true', '2020-01-08 04:05:06', 'def', '2', NULL) RETURNING id_orderunit";
                     $result = parent::executePgQuery($query);
                     $id = pg_fetch_row($result)[0]; // get first element of array
 
@@ -54,12 +61,11 @@
 	
 	
 					$obj->state = "success";
-					// $obj->state = "failure";
-					$obj->message = "Drucken erfolgreich!";
+					$obj->message = "Speichern erfolgreich!";
 	
 				} catch (Exception $e) {
 					$obj->state = "failure";
-					$obj->message = $e->getMessage();
+                    $obj->message = $e->getMessage();
 				}
 	
 				echo json_encode($obj);
