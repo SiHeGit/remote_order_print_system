@@ -20,16 +20,19 @@
 
         private $dbconn;
 
-        // constructor
+        /**
+         * constructor
+         */
         public function __construct(){
             $failure = False;
 
             do {
                 try {
+                    $failure = False;
                     parent::__construct();
                     $this->dbconn = parent::getConnection();
                     $resut = parent::executePgQuery('LISTEN printChannel;'); // listen to channel
-
+                    
                 } catch (Exception $e) {
                     $failure = True;
                     print_r($e->getMessage());
@@ -39,7 +42,9 @@
             } while ($failure);
         }
         
-        // run() to execute job
+        /**
+         * execute periodically the job
+         */
         public function run(){
 
             
@@ -55,6 +60,9 @@
     
                     } else {
                         print_r($notify);
+
+                        $connector = new NetworkPrintConnector("192.168.0.224", 9100);
+                        $printer = new Printer($connector);
     
                         $query = "SELECT id_orderunit FROM public.orderunit WHERE readytoprint = true";
                         $resultOrderUnit = parent::executePgQuery($query);
@@ -67,9 +75,6 @@
                             // $orderData = pg_fetch_row($resultOrder);
     
                             while ($orderData = pg_fetch_row($resultOrder)) {
-    
-                                $connector = new NetworkPrintConnector("192.168.0.224", 9100);
-                                $printer = new Printer($connector);
                                 
                                 /* Initialize */
                                 $printer -> initialize(); // resets formatting back to the defaults
@@ -80,10 +85,10 @@
                                     $printer -> text($orderData[1]."\n");
                                     $printer -> cut();
                                 }
-    
-                                $printer -> close();
-                            }   
+                            }
                         }
+
+                        $printer -> close();
                     }
 
                 } catch (Exception $e) {

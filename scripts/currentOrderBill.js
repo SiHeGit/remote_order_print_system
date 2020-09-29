@@ -4,18 +4,27 @@
     description:    current order methods
 */
 
+var currentOrderBill = currentOrderBill || {}; // creation of a namespace
 
-// views *******************************************************************************************
+currentOrderBill.class = (function() {
 
-/**
- * create order bill page
- */
-function currentOrderBill() {
-    clearContent();
+    // views *******************************************************************************************
 
-    // header *****************************************
-    document.getElementById("idHeader").innerText = "Rechnung"
+    /**
+     * create order bill page
+     */
+    var main = function() {
+        currentOrder.class.clearContent();
 
-}
+        // header *****************************************
+        document.getElementById("idHeader").innerText = "Rechnung"
 
-// content methods *******************************************************************************************
+    };
+
+    // content methods *******************************************************************************************
+
+    return { // definition of public methods
+        main: main
+    };
+
+})();
