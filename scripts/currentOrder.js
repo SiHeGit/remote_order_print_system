@@ -38,7 +38,6 @@ currentOrder.class = (function() {
         menu.class.closeNavbar();
 
         if(listOfElements == undefined){ // if list of elements is undefined: request new list from server
-
             ajaxRequest(phpDatabaseGet, createListOfElements, "POST", "")
         }
     };
@@ -72,13 +71,21 @@ currentOrder.class = (function() {
                         var nobr = document.createElement("nobr");
                             p = document.createElement("p");
                                 p.setAttribute("class", "alignright");
-                                p.innerText = listOfElements[i].price + " €";
+                                p.innerText = formatCurrency(listOfElements[i].price);
                             nobr.appendChild(p);
                         div.appendChild(nobr);
                 btn.appendChild(div);
             td.appendChild(btn);
         tr.appendChild(td);
 
+    };
+
+    /**
+     * format to european currency format
+     * @param {price fromatted in real} value 
+     */
+    var formatCurrency = function(value) {
+        return new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' }).format(value);
     };
 
     /**
@@ -116,9 +123,12 @@ currentOrder.class = (function() {
         
         // get content from script
         var xhttp = new XMLHttpRequest();
+        // xhttp.timeout = 5000; // set timeout (needs to be added for production)
         xhttp.onreadystatechange = function() {
             if (this.readyState == 4 && this.status == 200) {
-                callbackFunction(this);
+                callbackFunction(this, ""); // set empty message for success ajax
+            } else if (this.readyState == 4 && this.status != 200) {
+                callbackFunction(this, "Ajax Request Error!"); // set message for failure
             }
         };
         xhttp.open(type, script, true);
@@ -131,34 +141,40 @@ currentOrder.class = (function() {
      * used to create list of elements
      * @param {} xhttp 
      */
-    function createListOfElements(xhttp){
-
-        var json = xhttp.responseText;
-        var obj = JSON.parse(json);
+    function createListOfElements(xhttp, message){
 
         listOfElements = [];
 
-        if (obj.state == "success") { 
-            errorMessage = "Unbekannter Fehler."; // reset the error message to a default value
+        if(message == ""){
 
-            // prepare data attribute
-            listOfElements = obj.itemList;
-
-            for (i = 0; i < listOfElements.length; i++) {
-                listOfElements[i]["amount"] = 0; // add an additional key value
-                listOfElements[i]["selectToPay"] = 0;
-                listOfElements[i]["paid"] = 0;
+            var json = xhttp.responseText;
+            var obj = JSON.parse(json);
+    
+            if (obj.state == "success") { 
+                errorMessage = "Unbekannter Fehler."; // reset the error message to a default value
+    
+                // prepare data attribute
+                listOfElements = obj.itemList;
+    
+                for (i = 0; i < listOfElements.length; i++) {
+                    listOfElements[i]["amount"] = 0; // add an additional key value
+                    listOfElements[i]["selectToPay"] = 0;
+                    listOfElements[i]["paid"] = 0;
+                }
+                
+            } else if (obj.state == "empty") {
+                errorMessage = "Keine Elemente angelegt.";
+            } else {
+                errorMessage = "Serverfehler";
+                if(obj.message == ""){
+                    errorMessage += ".";
+                } else{
+                    errorMessage += ":\n" + obj.message;
+                }
             }
-            
-        } else if (obj.state == "empty") {
-            errorMessage = "Keine Elemente angelegt.";
+
         } else {
-            errorMessage = "Serverfehler";
-            if(obj.message == ""){
-                errorMessage += ".";
-            } else{
-                errorMessage += ":\n" + obj.message;
-            }
+            errorMessage = message;
         }
 
         errorMessage += "\nKontaktieren Sie Ihren Administrator."
@@ -198,7 +214,8 @@ currentOrder.class = (function() {
         ajaxRequest: ajaxRequest,
         setCheckAllItems: setCheckAllItems,
         getCheckAllItems: getCheckAllItems,
-        getErrorMessage: getErrorMessage
+        getErrorMessage: getErrorMessage,
+        formatCurrency: formatCurrency
     };
 
 })();

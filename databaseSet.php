@@ -17,6 +17,7 @@
          * constructor
          */
 		public function __construct(){
+            parent::checkPOSTRequestMethod();
             try{
                 parent::__construct();
             } catch (Exception $e) {
@@ -31,12 +32,7 @@
 
             $json = file_get_contents('php://input');
             $data = json_decode($json);
-            
-            // $test = count($data);
 
-            // if(isset($_POST["item"])){
-
-            // 	$text = $_POST["item"];
             $obj = new \stdClass(); // create a new object (JSON)
 
             try{
@@ -50,17 +46,20 @@
                 // 4. INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ('1', '0', '2', 'Pommes')
                 
                 // create new order unit
-                $query = "INSERT INTO orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ('true', '" . date('Y-m-d H:i:s') . "', 'def', '1', NULL) RETURNING id_orderunit";
-                $result = parent::executePgQuery($query);
+                parent::preparation("", "INSERT INTO orderunit (readytoprint, timestamp, waiter_id, tableno, printtime) VALUES ($1, $2, $3, $4, $5) RETURNING id_orderunit");
+                $result = parent::execution("", array('true', date('Y-m-d H:i:s'), 'def', '1', NULL));
                 $id = pg_fetch_row($result)[0]; // get first element of array
+
+                parent::preparation("storeData", "INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ($1, $2, $3, $4)");
 
                 foreach ($data as &$element) {
                     $item = $element->item;
                     $amount = $element->amount;
 
-                    // add order to order unit
-                    $query = "INSERT INTO public.order (amount, paid, orderunit_id, menu_id) VALUES ('" . $amount . "', '0', '" . $id . "', '" . $item . "')";
-                    $result = parent::executePgQuery($query);
+                    settype($item, 'string');
+                    settype($amount, 'integer');
+                    
+                    parent::execution("storeData", array($amount, '0', $id, $item));
                 }
 
                 // notify print job

@@ -26,7 +26,7 @@ The project is in the development stage. Following functions are still planned:
 - Front end to calculate the price and change of the current order
 
 ## Security Vulnerabilities
-If you discover a security vulnerability within ROPS, please send me an message.
+If you discover a security vulnerability within ROPS, please send me a message.
 
 ## License
 ROPS is open-sourced software licensed under the MIT license.

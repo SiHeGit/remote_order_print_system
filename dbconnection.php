@@ -34,15 +34,40 @@
 
         // executePgQuery() used to execute SQL query
         protected function executePgQuery($query) { // execute SQL query
-            $result = pg_query($this->dbconn, $query);
+            $result = pg_query($this->dbconn, sprintf($query));
             $this->evaluateResult($result, "Query could not be executed!");
             // pg_free_result($result); // free memory, needs to be specified if needed
+            return $result;
+        }
+
+        // generates a prepared statement with $name and $query
+        // $name can be "" if the prepared state is only used once
+        protected function preparation($name, $query) {
+            $result = pg_prepare($this->dbconn, $name, $query);
+            $this->evaluateResult($result, "Preparation of query not possible!");
+            return $result;
+        }
+
+        // executes a prepared statement with $name and $parameter as array
+        // $name can be "" if the prepared state is only used once
+        protected function execution($name, $parameter) {
+            $result = pg_execute($this->dbconn, $name, $parameter);
+            $this->evaluateResult($result, "Execution of prepared statement not possible!");
             return $result;
         }
 
         // getConnection() used to get the reference of the database object
         protected function getConnection() {
             return $this->dbconn;
+        }
+
+        // check if a POST is used to request the script
+        protected function checkPOSTRequestMethod(){
+            if($_SERVER["REQUEST_METHOD"]=="POST") {
+                return;
+            } else {
+                die();
+            }
         }
 
         /***
@@ -55,7 +80,7 @@
                 } else{
                     $error = pg_last_error($this->dbconn); // check if error is available
                     if (!empty($error)) {
-                        throw new Exception($message."\nError message: " . $error . "\n");
+                        throw new Exception($message."\n" . $error . "\n");
                     } else {
                         throw new Exception($message."\nNo detailed description available!\n");
                     }

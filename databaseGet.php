@@ -17,6 +17,7 @@
          * constructor
          */
 		public function __construct(){
+            parent::checkPOSTRequestMethod();
             try{
                 parent::__construct();
             } catch (Exception $e) {
@@ -34,9 +35,8 @@
             try {
                 $sendData = array();
                 
-    
-                $query = "SELECT * FROM public.menu";
-                $result = parent::executePgQuery($query);
+                parent::preparation("", "SELECT * FROM public.menu");
+                $result =  parent::execution("", array());
     
                 $data = pg_fetch_all($result);
     
@@ -47,11 +47,7 @@
                         $sendData[$k] = array();
                         $sendData[$k]["category"] = $v["category_id"];
                         $sendData[$k]["item"] = $v["id_menu"];
-                        try {
-                            $sendData[$k]["price"] = number_format(floatval($v["price"]), 2, ',', ' '); // german formatted price with two decimals and comma for decimal separator
-                        } catch (Exception $e) {
-                            $sendData[$k]["price"] = $v["price"]; // do not format if an error exists
-                        }
+                        $sendData[$k]["price"] = $v["price"];
                         
                     }
     

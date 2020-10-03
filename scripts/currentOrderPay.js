@@ -147,9 +147,6 @@ currentOrderPay.class = (function() {
                         spanText.setAttribute("id", "totalPrice");
                         spanText.innerText = "0.00";
                         divElement.appendChild(spanText);
-                    spanText = document.createElement("span");
-                        spanText.innerText = " €";
-                        divElement.appendChild(spanText);
                 div.appendChild(divElement)
             staticContent.appendChild(div);
 
@@ -324,13 +321,12 @@ currentOrderPay.class = (function() {
 
 
         var sum = document.getElementById("totalPrice");
-        sum.innerText = (Math.round(totalPrice * 100) / 100).toFixed(2); // show two decimal places after comma
+        sum.innerText = currentOrder.class.formatCurrency(totalPrice);
 
-        var sign = sum.nextSibling; // get EURO sign
         if(totalPrice < 0){
-            sum.style.color = sign.style.color = "red"; // set color to red for negative numbers
+            sum.style.color = "red"; // set color to red for negative numbers
         } else {
-            sum.style.color = sign.style.color = ""; // reset color
+            sum.style.color = ""; // reset color
         }
 
     };
@@ -441,23 +437,33 @@ currentOrderPay.class = (function() {
      * used to show message after print / storage
      * @param {} xhttp
      */
-    var evaluateRequest = function(xhttp){
-        var json = xhttp.responseText;
-        var obj = JSON.parse(json);
+    var evaluateRequest = function(xhttp, message){
 
-        var timeout = 3000; // standard timeout
-        var messageColor = "";
-        if (obj.state == "success") {
-            setItemsSent(SENTSUCCESSFULL);
-            setItemsSentSuccessOnce(true);
-        } else {// change timeout and color on failure
+        if(message == ""){
+            var json = xhttp.responseText;
+            var obj = JSON.parse(json);
+    
+            var timeout = 3000; // standard timeout
+            var messageColor = "";
+            if (obj.state == "success") {
+                setItemsSent(SENTSUCCESSFULL);
+                setItemsSentSuccessOnce(true);
+            } else {// change timeout and color on failure
+                messageColor = "red";
+                timeout = 6000;
+                setItemsSent(SENTFAILURE);
+            }
+            dispMessage = obj.message;
+
+        } else {
+            dispMessage = message + "\nKontaktieren Sie Ihren Administrator.";
             messageColor = "red";
             timeout = 6000;
             setItemsSent(SENTFAILURE);
         }
 
         checkSent();
-        showMessage(obj.message, "requestMessage", timeout, messageColor);
+        showMessage(dispMessage, "requestMessage", timeout, messageColor);
 
     };
 
